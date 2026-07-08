@@ -3,7 +3,7 @@ guid: a37e8466236089c45b610370218b5353
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
-  serializedVersion: 12
+  serializedVersion: 13
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -20,11 +20,12 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: 0.25
     normalMapFilter: 0
+    flipGreenChannel: 0
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
-  ignoreMasterTextureLimit: 0
+  ignoreMipmapLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -63,6 +64,7 @@ TextureImporter:
   textureFormatSet: 0
   ignorePngGamma: 0
   applyGammaDecoding: 0
+  swizzle: 50462976
   cookieLightType: 0
   platformSettings:
   - serializedVersion: 3
@@ -75,6 +77,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -87,6 +90,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -99,6 +103,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -111,6 +116,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -123,6 +129,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
@@ -748,38 +755,37 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      PLAY_BUTTON1: -716720451
-      SOUND_OFF: -1616128084
-      EXIT_2: -1641844568
-      BAR1: -1397424353
-      A_RIGHT: -525753861
-      EXIT_BUTTON_1: 1878393918
-      BAR2: 482729247
-      BAR_OUTLINE: -2127119051
-      SETTINGS: 614323164
-      SET_BAR: 590527004
-      BAR3: -264501715
       A_LEFT: 701606609
+      A_RIGHT: -525753861
+      BAR1: -1397424353
+      BAR2: 482729247
+      BAR3: -264501715
       BAR4: -1312014013
-      LEVEL_BAR: -1150674614
-      PLAY_BUTTON: 177566260
-      SOUND_OFF2: 1073997449
       BAR_BG: -2025207524
-      SOUND_ON: 433989029
-      EXIT_BUTTON: -949757489
-      EMPTY_1: 711346776
-      PAUSE_BUTTON1: -713559888
+      BAR_OUTLINE: -2127119051
       BG_BAR2: -228637625
-      EXIT_BAR: -630868318
-      SCROLL: 1897795018
-      SOUND_ON1: 1820693325
-      PAUSE_BUTTON: -708245964
-      PLAY BAR: -72823007
       BG_UI: 1680676567
+      EMPTY_1: 711346776
+      EXIT_2: -1641844568
+      EXIT_BAR: -630868318
+      EXIT_BUTTON: -949757489
+      EXIT_BUTTON_1: 1878393918
+      LEVEL_BAR: -1150674614
+      PAUSE_BUTTON: -708245964
+      PAUSE_BUTTON1: -713559888
+      PLAY BAR: -72823007
+      PLAY_BUTTON: 177566260
+      PLAY_BUTTON1: -716720451
+      SCROLL: 1897795018
+      SETTINGS: 614323164
       SETTINGS_1: -1398130153
-  spritePackingTag: 
+      SET_BAR: 590527004
+      SOUND_OFF: -1616128084
+      SOUND_OFF2: 1073997449
+      SOUND_ON: 433989029
+      SOUND_ON1: 1820693325
+  mipmapLimitGroupName: 
   pSDRemoveMatte: 0
-  pSDShowRemoveMatteOption: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 
