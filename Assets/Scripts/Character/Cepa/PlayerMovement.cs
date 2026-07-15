@@ -3,113 +3,219 @@ using System.Collections.Generic;
 using System.Runtime.ConstrainedExecution;
 using UnityEngine;
 
-//Fuente para el codigo, explicacion y comentarios
-//https://qookie.games/2d-player-movement/
-
 public class PlayerMovement : MonoBehaviour
 {
     [Header("Componentes")]
     [SerializeField] private Animator animator;
-    [SerializeField] private Rigidbody2D rigid; //toma el rigidbody y hace una estancia de clase
+    [SerializeField] private Rigidbody2D rigid;
 
-    // Variables de velocidad de movimiento y salto
     [Header("Configuración de Movimiento")]
     [SerializeField] private float speed = 7f;
     [SerializeField] private float jumpForce = 19f;
 
-    // Deteccion del terreno
+    [Header("Configuración de Escalada")]
+    [SerializeField] private float climbSpeed = 5f;
+    [SerializeField] private float grabCooldownDuration = 0.25f;
+
+    private float verticalInput;
+    private bool isNearLadder = false;
+    private bool isClimbing = false;
+    private float originalGravity;
+    private int laddersTouchingCount = 0;
+    private float grabCooldownTimer = 0f;
+
     [Header("Detección de Suelo")]
     [SerializeField] private Transform groundCheck;
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private float checkRadius = 0.2f;
 
-    // Limite de saltos
     [Header("Límites de Salto")]
     [SerializeField] private int maxJumps = 1;
 
-    // Valores de gravedad dinámico
     [Header("Ajustes de Gravedad Dinámica")]
-    [SerializeField] private float riseMultiplier = 5f;   // Multiplicador mientras sube presionando espacio
-    [SerializeField] private float fallMultiplier = 5f; // Multiplicador cuando cae
-    [SerializeField] private float lowJumpMultiplier = 22f; // Multiplicador si sueltas el botón rápido
+    [SerializeField] private float riseMultiplier = 5f;
+    [SerializeField] private float fallMultiplier = 5f;
+    [SerializeField] private float lowJumpMultiplier = 22f;
 
     private float moveInput;
     private bool isGrounded;
     private int jumpCount;
-    private bool jumpRequested; // Bandera para avisar a FixedUpdate que debe saltar
+    private bool jumpRequested;
+
+    private MovingPlatform activePlatform;
 
 
-    void Start(){
+    void Start()
+    {
         if (rigid == null) rigid = GetComponent<Rigidbody2D>();
+        originalGravity = rigid.gravityScale;
     }
 
-    void Update(){
-    // Movimiento horizontal
-        // 1. Se captura el movimiento
+    void Update()
+    {
         moveInput = Input.GetAxisRaw("Horizontal");
+        verticalInput = Input.GetAxisRaw("Vertical");
 
-        // 1.1 Control de animaciones
-        animator.SetBool("IsRunning", moveInput != 0); 
-        if (moveInput < 0){
+        if (grabCooldownTimer > 0f)
+        {
+            grabCooldownTimer -= Time.deltaTime;
+        }
+
+        animator.SetBool("IsRunning", moveInput != 0);
+        if (moveInput < 0)
+        {
             transform.localScale = new Vector3(-1, 1, 1);
         }
-        else if (moveInput > 0) {
+        else if (moveInput > 0)
+        {
             transform.localScale = new Vector3(1, 1, 1);
         }
 
-        // Detectar si el jugador presiona espacio para saltar
-        if (Input.GetKeyDown(KeyCode.Space) && jumpCount < maxJumps){
-            jumpRequested = true;
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            if (isClimbing)
+            {
+                isClimbing = false;
+                rigid.gravityScale = originalGravity;
+                grabCooldownTimer = grabCooldownDuration;
+                jumpRequested = true;
+            }
+            else if (jumpCount < maxJumps)
+            {
+                jumpRequested = true;
+            }
+        }
+
+        if (isNearLadder && Mathf.Abs(verticalInput) > 0.1f && grabCooldownTimer <= 0f)
+        {
+            if (isGrounded && verticalInput < -0.1f && !isClimbing)
+            {
+                // Evita descender en el suelo firme
+            }
+            else
+            {
+                isClimbing = true;
+            }
         }
     }
 
-    void FixedUpdate() // Procesado de físicas en una función aparte para que sea independiente de los FPS
+    void FixedUpdate()
     {
-        // Movimiento Horizontal
-        rigid.velocity = new Vector2(moveInput * speed, rigid.velocity.y);
-        
-        // Verificación del suelo
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, checkRadius, groundLayer);
-        if (isGrounded && rigid.velocity.y <= 0.1f)
+
+        if (isClimbing && isGrounded && Mathf.Abs(moveInput) > 0.1f)
         {
-            jumpCount = 0;
+            isClimbing = false;
+            rigid.gravityScale = originalGravity;
         }
 
-        // Se envían los valores de aire al Animator para saltar / caer
+        if (isClimbing)
+        {
+            rigid.gravityScale = 0f;
+            rigid.velocity = new Vector2(moveInput * speed, verticalInput * climbSpeed);
+            jumpCount = 0;
+        }
+        else
+        {
+            rigid.gravityScale = originalGravity;
+
+            // Se obtiene la velocidad horizontal de la plataforma activa si el personaje está sobre ella
+            float platformHorizontalVelocity = 0f;
+            if (activePlatform != null)
+            {
+                platformHorizontalVelocity = activePlatform.CurrentVelocity.x;
+            }
+
+            // Suma la velocidad del movimiento lateral y la velocidad propia de la plataforma
+            float horizontalSpeed = (moveInput * speed) + platformHorizontalVelocity;
+            rigid.velocity = new Vector2(horizontalSpeed, rigid.velocity.y);
+
+            if (isGrounded && rigid.velocity.y <= 0.1f)
+            {
+                jumpCount = 0;
+            }
+
+            if (rigid.velocity.y < 0)
+            {
+                rigid.velocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1) * Time.fixedDeltaTime;
+            }
+            else if (rigid.velocity.y > 0 && !Input.GetKey(KeyCode.Space))
+            {
+                rigid.velocity += Vector2.up * Physics2D.gravity.y * (lowJumpMultiplier - 1) * Time.fixedDeltaTime;
+            }
+            else if (rigid.velocity.y > 0 && Input.GetKey(KeyCode.Space))
+            {
+                rigid.velocity += Vector2.up * Physics2D.gravity.y * (riseMultiplier - 1) * Time.fixedDeltaTime;
+            }
+        }
+
         animator.SetBool("IsGrounded", isGrounded);
         animator.SetFloat("VelocityY", rigid.velocity.y);
+        animator.SetBool("IsClimbing", isClimbing);
 
-        // Salto
-        if (jumpRequested){
+        if (jumpRequested)
+        {
+            if (transform.parent != null)
+            {
+                transform.SetParent(null);
+            }
+
             rigid.velocity = new Vector2(rigid.velocity.x, jumpForce);
             jumpCount++;
             jumpRequested = false;
         }
-
-        // ---- CONTROL DE GRAVEDAD DINÁMICA ----
-        // 1. Si el personaje está cayendo
-        if (rigid.velocity.y < 0){
-            rigid.velocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1) * Time.fixedDeltaTime;
-        }
-        // 2. Si está subiendo pero SUELTAS el botón (salto corto)
-        else if (rigid.velocity.y > 0 && !Input.GetKey(KeyCode.Space)){
-            rigid.velocity += Vector2.up * Physics2D.gravity.y * (lowJumpMultiplier - 1) * Time.fixedDeltaTime;
-        }
-        // 3. Si está subiendo y se mantiene presionado el botón (salto largo pero rápido)
-        else if (rigid.velocity.y > 0 && Input.GetKey(KeyCode.Space)){
-            rigid.velocity += Vector2.up * Physics2D.gravity.y * (riseMultiplier - 1) * Time.fixedDeltaTime;
-        }
     }
 
-    // Dibuja la esfera en el editor para que puedas calibrar visualmente el tamaño del GroundCheck
-    private void OnDrawGizmosSelected()
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (groundCheck != null)
+        if (collision.CompareTag("Ladder"))
         {
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(groundCheck.position, checkRadius);
+            laddersTouchingCount++;
+            isNearLadder = true;
         }
     }
 
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Ladder"))
+        {
+            laddersTouchingCount--;
 
+            if (laddersTouchingCount <= 0)
+            {
+                laddersTouchingCount = 0;
+                isNearLadder = false;
+
+                if (isClimbing)
+                {
+                    isClimbing = false;
+                    rigid.gravityScale = originalGravity;
+                    grabCooldownTimer = grabCooldownDuration;
+                }
+            }
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Platform"))
+        {
+            MovingPlatform platform = collision.gameObject.GetComponent<MovingPlatform>();
+            if (platform != null)
+            {
+                activePlatform = platform;
+            }
+        }
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Platform"))
+        {
+            if (activePlatform != null && collision.gameObject == activePlatform.gameObject)
+            {
+                activePlatform = null;
+            }
+        }
+    }
 }

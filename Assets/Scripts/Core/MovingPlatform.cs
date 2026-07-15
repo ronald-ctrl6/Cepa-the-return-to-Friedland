@@ -2,74 +2,77 @@ using UnityEngine;
 
 public class MovingPlatform : MonoBehaviour
 {
-    [Header("Ruta de la Plataforma")]
-    [SerializeField] private Transform[] waypoints; // Puntos de ruta
-    [SerializeField] private float speed = 3.0f;     // Velocidad de movimiento
-    [SerializeField] private float waitTime = 1.0f;  // Tiempo de espera en cada punto
+    [Header("Configuración de Movimiento")]
+    [SerializeField] private Transform[] waypoints;
+    [SerializeField] private float speed = 3f;
+    [SerializeField] private float waitTime = 0.5f;
 
     private int currentWaypointIndex = 0;
     private float waitTimer = 0f;
     private bool isWaiting = false;
-    private Rigidbody2D rb;
+
+    // NUEVA PROPIEDAD: Permite al jugador leer la velocidad actual de la plataforma
+    public Vector2 CurrentVelocity { get; private set; }
+    private Vector3 lastPosition;
 
     void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
-
-        // Asegurar que la plataforma empiece en el primer punto
-        if (waypoints.Length > 0)
+        if (waypoints != null && waypoints.Length > 0)
         {
             transform.position = waypoints[0].position;
         }
+        lastPosition = transform.position;
     }
 
-    void FixedUpdate()
+    void Update()
     {
-        if (waypoints.Length == 0) return;
+        if (waypoints == null || waypoints.Length < 2) return;
 
         if (isWaiting)
         {
-            waitTimer += Time.fixedDeltaTime;
+            waitTimer += Time.deltaTime;
             if (waitTimer >= waitTime)
             {
                 isWaiting = false;
                 waitTimer = 0f;
-                currentWaypointIndex = (currentWaypointIndex + 1) % waypoints.Length;
             }
+            CurrentVelocity = Vector2.zero; // Sin velocidad mientras espera
             return;
         }
 
         MoveTowardsTarget();
     }
 
-    void MoveTowardsTarget()
+    // Usamos FixedUpdate para el cálculo físico de la velocidad
+    void FixedUpdate()
     {
-        Vector2 targetPosition = waypoints[currentWaypointIndex].position;
+        CurrentVelocity = (transform.position - lastPosition) / Time.fixedDeltaTime;
+        lastPosition = transform.position;
+    }
 
-        // Mover el Rigidbody2D de forma física y fluida
-        Vector2 newPosition = Vector2.MoveTowards(rb.position, targetPosition, speed * Time.fixedDeltaTime);
-        rb.MovePosition(newPosition);
+    private void MoveTowardsTarget()
+    {
+        Vector3 targetPosition = waypoints[currentWaypointIndex].position;
+        transform.position = Vector3.MoveTowards(transform.position, targetPosition, speed * Time.deltaTime);
 
-        // Si está muy cerca del objetivo, empieza a esperar
-        if (Vector2.Distance(rb.position, targetPosition) < 0.05f)
+        if (Vector3.Distance(transform.position, targetPosition) < 0.05f)
         {
-            isWaiting = true;
+            transform.position = targetPosition;
+            currentWaypointIndex = (currentWaypointIndex + 1) % waypoints.Length;
+
+            if (waitTime > 0f)
+            {
+                isWaiting = true;
+            }
         }
     }
 
-    // --- LOGICA DE "HIJO" EN 2D ---
-    // Hace que el jugador se mueva solidariamente con la plataforma al pararse sobre ella
-
+    // --- DETECCIÓN DE COLISIÓN PARA ADOPTAR AL JUGADOR ---
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            // Opcional: Verificar que el jugador caiga desde ARRIBA de la plataforma
-            // para evitar que se "pegue" si choca desde abajo o por los lados.
-            if (collision.relativeVelocity.y <= 0f)
-            {
-                collision.transform.SetParent(transform);
-            }
+            collision.transform.SetParent(transform);
         }
     }
 
@@ -78,6 +81,19 @@ public class MovingPlatform : MonoBehaviour
         if (collision.gameObject.CompareTag("Player"))
         {
             collision.transform.SetParent(null);
+        }
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (waypoints == null || waypoints.Length < 2) return;
+        Gizmos.color = Color.green;
+        for (int i = 0; i < waypoints.Length; i++)
+        {
+            Gizmos.DrawWireSphere(waypoints[i].position, 0.3f);
+            int nextIndex = (i + 1) % waypoints.Length;
+            if (waypoints[nextIndex] != null)
+                Gizmos.DrawLine(waypoints[i].position, waypoints[nextIndex].position);
         }
     }
 }
