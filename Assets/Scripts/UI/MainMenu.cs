@@ -30,7 +30,6 @@ public class MainMenu : MonoBehaviour
     {
         if (faderAnimator != null)
         {
-            // Activamos el trigger para pasar de FadeIn (transparente) a FadeOut (negro)
             faderAnimator.SetTrigger("StartFadeOut");
         }
 
