@@ -62,7 +62,12 @@ MonoBehaviour:
     m_Bits: 8
   rayLength: 1
   rayWidth: 2
+  hasDoubleJump: 0
+  hasDash: 0
   maxJumps: 1
+  dashSpeed: 20
+  dashDuration: 0.2
+  dashCooldown: 1
   riseMultiplier: 5
   fallMultiplier: 5
   lowJumpMultiplier: 22
@@ -183,7 +188,7 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0.05}
-  m_Size: {x: 1.55, y: 0.0001}
+  m_Size: {x: 1.43, y: 0.0001}
   m_Direction: 0
 --- !u!1 &5695609978052883178
 GameObject:

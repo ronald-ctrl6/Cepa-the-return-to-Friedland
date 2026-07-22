@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Ladder
   - Platform
+  - Collective
   layers:
   - Default
   - TransparentFX
