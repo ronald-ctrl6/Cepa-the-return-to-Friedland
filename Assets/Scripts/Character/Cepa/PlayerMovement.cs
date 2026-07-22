@@ -27,7 +27,8 @@ public class PlayerMovement : MonoBehaviour
     [Header("Detección de Suelo")]
     [SerializeField] private Transform groundCheck;
     [SerializeField] private LayerMask groundLayer;
-    [SerializeField] private float checkRadius = 0.2f;
+    [SerializeField] private float rayLength = 0.15f;
+    [SerializeField] private float rayWidth = 0.3f;
 
     [Header("Límites de Salto")]
     [SerializeField] private int maxJumps = 1;
@@ -79,6 +80,9 @@ public class PlayerMovement : MonoBehaviour
                 rigid.gravityScale = originalGravity;
                 grabCooldownTimer = grabCooldownDuration;
                 jumpRequested = true;
+
+                bool isMovingOnLadder = isClimbing && Mathf.Abs(verticalInput) > 0.1f;
+                animator.SetBool("IsMovingClimbing", isMovingOnLadder); // O el nombre que prefieras usar en t
             }
             else if (jumpCount < maxJumps)
             {
@@ -101,7 +105,16 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
-        isGrounded = Physics2D.OverlapCircle(groundCheck.position, checkRadius, groundLayer);
+        Vector2 leftRayPosition = (Vector2)groundCheck.position + Vector2.left * (rayWidth / 2f);
+        Vector2 rightRayPosition = (Vector2)groundCheck.position + Vector2.right * (rayWidth / 2f);
+
+        bool leftGrounded = Physics2D.Raycast(leftRayPosition, Vector2.down, rayLength, groundLayer);
+        bool rightGrounded = Physics2D.Raycast(rightRayPosition, Vector2.down, rayLength, groundLayer);
+
+        isGrounded = leftGrounded || rightGrounded;
+
+        Debug.DrawRay(leftRayPosition, Vector2.down * rayLength, leftGrounded ? Color.green : Color.red);
+        Debug.DrawRay(rightRayPosition, Vector2.down * rayLength, rightGrounded ? Color.green : Color.red);
 
         if (isClimbing && isGrounded && Mathf.Abs(moveInput) > 0.1f)
         {
@@ -152,6 +165,10 @@ public class PlayerMovement : MonoBehaviour
         animator.SetBool("IsGrounded", isGrounded);
         animator.SetFloat("VelocityY", rigid.velocity.y);
         animator.SetBool("IsClimbing", isClimbing);
+
+        // Control para evitar que la animación de escalar se congele al estar quieto en la escalera
+        bool isMovingOnLadder = isClimbing && (Mathf.Abs(verticalInput) > 0.1f || Mathf.Abs(moveInput) > 0.1f);
+        animator.SetBool("IsMovingClimbing", isMovingOnLadder);
 
         if (jumpRequested)
         {
