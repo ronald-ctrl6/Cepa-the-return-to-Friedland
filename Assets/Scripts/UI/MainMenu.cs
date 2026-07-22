@@ -9,16 +9,13 @@ public class MainMenu : MonoBehaviour
     [SerializeField] private float transitionTime = 1f;
 
     [Header("Nombre de la Escena del Primer Nivel")]
-    [SerializeField] private string nextSceneName = "Level1";
+    [SerializeField] private string nextSceneName = "Level1-1";
 
 
     // Botón Jugar
     public void Play()
     {
         Debug.Log("EL BOTÓN PLAY FUE PRESIONADO FÍSICAMENTE");
-        StartCoroutine(LoadSceneWithFade(nextSceneName));
-
-        // En lugar de cargar directo, iniciamos la secuencia con Fade
         StartCoroutine(LoadSceneWithFade(nextSceneName));
     }
 
@@ -33,7 +30,6 @@ public class MainMenu : MonoBehaviour
     {
         if (faderAnimator != null)
         {
-            // Activamos el trigger para pasar de FadeIn (transparente) a FadeOut (negro)
             faderAnimator.SetTrigger("StartFadeOut");
         }
 
