@@ -279,7 +279,7 @@ GameObject:
   - component: {fileID: 4745905242693589250}
   - component: {fileID: 345025911583917788}
   m_Layer: 5
-  m_Name: HealthPanel
+  m_Name: HealthUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -367,7 +367,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0, y: -77.59998}
+  m_AnchoredPosition: {x: 0, y: -77.59998}
   m_SizeDelta: {x: 80, y: 80}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4865020489681465951
@@ -615,7 +615,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 960, y: 0}
+  m_AnchoredPosition: {x: 1121, y: 0}
   m_SizeDelta: {x: -1920, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &922057856922258405
@@ -986,7 +986,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1672127079943866050
@@ -1438,7 +1438,7 @@ GameObject:
   - component: {fileID: 4241498686009456178}
   m_Layer: 5
   m_Name: Canvas
-  m_TagString: Untagged
+  m_TagString: UI
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2106,15 +2106,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hearts:
-  - {fileID: 0}
+  - {fileID: 4612537260316900426}
   - {fileID: 2815028736597521151}
   - {fileID: 7079656470495228366}
-  - {fileID: 0}
-  - {fileID: 0}
+  fullHeartSprite: {fileID: 21300000, guid: 31f67055caeaa2945bc601e895da7565, type: 3}
+  emptyHeartSprite: {fileID: 21300000, guid: a610b53b54a702b4f8596d2b71967bfd, type: 3}
   onionText: {fileID: 6920801664091726555}
   coinText: {fileID: 786073699249832359}
   gemText: {fileID: 2549736942598306739}
-  rescueText: {fileID: 0}
+  rescueText: {fileID: 7046924964033342549}
   inventorySlots:
   - {fileID: 780444117378496892}
   - {fileID: 1649006435548344047}

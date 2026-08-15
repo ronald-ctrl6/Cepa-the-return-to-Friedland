@@ -7,6 +7,7 @@ TagManager:
   - Ladder
   - Platform
   - Collective
+  - UI
   layers:
   - Default
   - TransparentFX

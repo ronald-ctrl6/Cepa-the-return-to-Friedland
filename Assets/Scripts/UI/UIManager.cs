@@ -6,6 +6,8 @@ public class UIManager : MonoBehaviour
 {
     [Header("Vida")]
     public Image[] hearts;
+    public Sprite fullHeartSprite; // Sprite de corazón lleno
+    public Sprite emptyHeartSprite; // Sprite de corazón vacío
 
     [Header("Recursos")]
     public TMP_Text onionText;
@@ -18,9 +20,15 @@ public class UIManager : MonoBehaviour
 
     public void UpdateHealth(int currentHealth)
     {
+        if (hearts == null || hearts.Length == 0) return;
+
         for (int i = 0; i < hearts.Length; i++)
         {
-            hearts[i].enabled = i < currentHealth;
+            if (hearts[i] == null) continue;
+            if (i < currentHealth) hearts[i].sprite = fullHeartSprite;
+            else hearts[i].sprite = emptyHeartSprite;
+
+            hearts[i].SetAllDirty();
         }
     }
 
