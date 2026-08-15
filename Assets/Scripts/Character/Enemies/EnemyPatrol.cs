@@ -16,11 +16,17 @@ public class EnemyPatrol : MonoBehaviour
     private float originalScaleX;
 
     private void Awake()
+{
+    rb = GetComponent<Rigidbody2D>();
+
+    if (rb == null)
     {
-        rb = GetComponent<Rigidbody2D>();
-        direction = startMovingRight ? 1 : -1;
-        originalScaleX = Mathf.Abs(transform.localScale.x);
+        Debug.LogError("No encontré el Rigidbody2D");
     }
+
+    direction = startMovingRight ? 1 : -1;
+    originalScaleX = Mathf.Abs(transform.localScale.x);
+}
 
     private void Start()
     {
@@ -40,16 +46,13 @@ public class EnemyPatrol : MonoBehaviour
     }
 
     private void MoveEnemy()
+{
+    if (rb != null)
     {
-        if (rb != null)
-        {
-            rb.velocity = new Vector2(direction * speed, rb.velocity.y);
-        }
-        else
-        {
-            transform.Translate(Vector2.right * direction * speed * Time.fixedDeltaTime);
-        }
+        Vector2 newPosition = rb.position + Vector2.right * direction * speed * Time.fixedDeltaTime;
+        rb.MovePosition(newPosition);
     }
+}
 
     private void CheckPatrolLimits()
     {
@@ -82,12 +85,12 @@ public class EnemyPatrol : MonoBehaviour
     }
 
     private void StopMovement()
+{
+    if (rb != null)
     {
-        if (rb != null)
-        {
-            rb.velocity = new Vector2(0f, rb.velocity.y);
-        }
+        rb.velocity = Vector2.zero;
     }
+}
 
     private void OnDrawGizmosSelected()
     {
