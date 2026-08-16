@@ -205,6 +205,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHearts: 3
   respawnPoint: {fileID: 0}
+  uiManager: {fileID: 0}
 --- !u!1 &5695609978052883178
 GameObject:
   m_ObjectHideFlags: 0

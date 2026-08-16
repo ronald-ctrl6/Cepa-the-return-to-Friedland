@@ -17,6 +17,12 @@ public class UIManager : MonoBehaviour
 
     [Header("Inventario")]
     public Image[] inventorySlots;
+    public Sprite aceiteSprite; // Sprite de Aceite
+    public Sprite aceiteVacioSprite; // Sprite de Aceite sin recoger
+    public Sprite fosforoSprite; // Sprite de Fosforo
+    public Sprite fosforoVacioSprite; // Sprite Fosfor sin recoger
+    public Sprite guisantesSprite; // Sprite de Guisantes
+    public Sprite guisantesVacioSprite; // Sprite de Guisantes sin reoger
 
     public void UpdateHealth(int currentHealth)
     {
@@ -34,21 +40,45 @@ public class UIManager : MonoBehaviour
 
     public void UpdateOnions(int amount)
     {
-        onionText.text = "x" + amount;
+        onionText.text = "" + amount;
     }
 
     public void UpdateCoins(int amount)
     {
-        coinText.text = "x" + amount;
+        coinText.text = "" + amount;
     }
 
     public void UpdateGems(int amount)
     {
-        gemText.text = "x" + amount;
+        gemText.text = "" + amount;
     }
 
     public void UpdateRescues(int current, int total)
     {
         rescueText.text = current + " / " + total;
+    }
+
+    public void UpdateItem(int currentItem)
+    {
+        if (inventorySlots == null || inventorySlots.Length == 0) return;
+
+        for (int i = 0; i < inventorySlots.Length; i++)
+        {
+            if (inventorySlots[i] == null) continue;
+            if (i == 1) inventorySlots[1].sprite = aceiteSprite;
+            if (i == 2)
+            {
+                inventorySlots[1].sprite = aceiteSprite;
+                inventorySlots[2].sprite = fosforoSprite;
+            }
+            if (i == 3) 
+            {
+                inventorySlots[1].sprite = aceiteSprite;
+                inventorySlots[2].sprite = fosforoSprite;
+                inventorySlots[3].sprite = guisantesSprite; 
+            }
+
+            inventorySlots[i].SetAllDirty();
+        }
     }
 }

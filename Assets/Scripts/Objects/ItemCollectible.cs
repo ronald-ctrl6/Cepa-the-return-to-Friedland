@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class ItemCollectible : MonoBehaviour
 {
-    public enum CollectibleType { Coin, Diamond, Character, Item }
+    public enum CollectibleType { Coin, Diamond, Character }
 
     [Header("Configuración del Coleccionable")]
     [SerializeField] private CollectibleType type;
@@ -43,29 +43,24 @@ public class ItemCollectible : MonoBehaviour
 
     private void HandleCollection()
     {
+        UIManager uiManager = FindFirstObjectByType<UIManager>();
         switch (type)
         {
             case CollectibleType.Coin:
-                // Llama a tu GameManager o sistema de monedas
-                // GameManager.Instance.AddCoins(amountValue);
+                // Le pasamos el amountValue configurado en el Inspector
+                GameManager.Instance.AddCoins(amountValue);
                 Destroy(gameObject);
                 break;
 
             case CollectibleType.Diamond:
-                // Llama a tu GameManager o sistema de diamantes
-                // GameManager.Instance.AddGems(amountValue);
+                // Le pasamos el amountValue configurado en el Inspector
+                GameManager.Instance.AddGems(amountValue);
                 Destroy(gameObject);
                 break;
 
             case CollectibleType.Character:
-                // Cambia la animación del personaje rescatado y no lo destruyas
                 ApplyCollectedState();
-                // GameManager.Instance.AddRescue(); // Para tu texto de rescates ("1 / 5")
-                break;
-            case CollectibleType.Item:
-                // Llama a tu GameManager o sistema de diamantes
-                // GameManager.Instance.AddGems(amountValue);
-                Destroy(gameObject);
+                GameManager.Instance.AddRescue();
                 break;
         }
     }
@@ -76,9 +71,8 @@ public class ItemCollectible : MonoBehaviour
         {
             if (animator != null)
             {
-                animator.SetBool(collectedAnimTrigger, true); // O usa animator.Play("NombreDeAnimacion");
+                animator.SetTrigger(collectedAnimTrigger);
             }
-            // Desactivamos el collider para que el jugador no pueda volver a interactuar con él
             Collider2D col = GetComponent<Collider2D>();
             if (col != null) col.enabled = false;
         }

@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2786060696420831233}
   - component: {fileID: 4190781119327318391}
   - component: {fileID: 1886047271057197596}
+  - component: {fileID: 1865824755586061915}
   m_Layer: 0
   m_Name: Cebollita
   m_TagString: Untagged
@@ -43,7 +44,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 747740615816609437}
-  m_BodyType: 0
+  m_BodyType: 2
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
@@ -51,7 +52,7 @@ Rigidbody2D:
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 51068587b2d9ffd4c9241ea63736a735, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -107,6 +108,23 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 40, y: 30}
   m_EdgeRadius: 0
+--- !u!114 &1865824755586061915
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 747740615816609437}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b47c3cc72776bc4182ce3ba437463a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 2
+  collectibleID: Cebo-1-1-1
+  amountValue: 1
+  animator: {fileID: 4809480022716464201}
+  collectedAnimTrigger: IsCollected
 --- !u!1 &4398945473228861012
 GameObject:
   m_ObjectHideFlags: 0
@@ -165,7 +183,7 @@ Transform:
   m_GameObject: {fileID: 7713510398306947145}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.39, z: 0}
+  m_LocalPosition: {x: 0, y: 0.28, z: 0}
   m_LocalScale: {x: 63, y: 63, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
