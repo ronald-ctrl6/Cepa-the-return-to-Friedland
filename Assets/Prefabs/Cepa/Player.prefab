@@ -65,7 +65,7 @@ MonoBehaviour:
   rayWidth: 1.5
   hasDoubleJump: 0
   hasDash: 0
-  maxJumps: 0
+  maxJumps: 2
   dashSpeed: 20
   dashDuration: 0.2
   dashCooldown: 0.5

@@ -10,7 +10,7 @@ public class PlayerHealth : MonoBehaviour
     private int currentHearts;
 
     [Header("Respawn")]
-    public Transform respawnPoint; // El punto donde reaparecerá
+    public Transform respawnPoint;
 
     [Header("Referencias UI")]
     public UIManager uiManager;
@@ -19,44 +19,64 @@ public class PlayerHealth : MonoBehaviour
 
     void Start()
     {
-        currentHearts = maxHearts;
+        if (GameManager.Instance != null)
+        {
+            if (GameManager.Instance.currentHealth <= 0)
+            {
+                GameManager.Instance.currentHealth = maxHearts;
+            }
+            currentHearts = GameManager.Instance.currentHealth;
+        }
+        else
+        {
+            currentHearts = maxHearts;
+        }
+
         if (uiManager == null) uiManager = FindFirstObjectByType<UIManager>();
 
         UpdateUI();
     }
 
-    // Método para restar vida y hacer respawn
     public void TakeDamage(int damageAmount)
     {
-        if (isTakingDamage) return; // Si ya está procesando daño, ignora el siguiente
+        if (isTakingDamage) return;
 
         isTakingDamage = true;
         currentHearts -= damageAmount;
 
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.currentHealth = currentHearts;
+        }
+
         UpdateUI();
+
         if (currentHearts <= 0)
         {
-            // Si la salud llega a 0, cargamos la escena de GameOver
-            SceneManager.LoadScene("Game Over"); // Asegúrate de que el nombre sea exacto
+            SceneManager.LoadScene("Game Over");
         }
         else
         {
-            Respawn();
             Invoke("ResetDamageState", 0.5f);
         }
     }
 
     void ResetDamageState() { isTakingDamage = false; }
 
+    public void FallIntoPit()
+    {
+        TakeDamage(1);
+        Respawn();
+    }
+
     public void Respawn()
     {
         if (respawnPoint != null)
         {
-            // Desactiva el Rigidbody temporalmente para evitar bugs de física durante el teletransporte
             Rigidbody2D rb = GetComponent<Rigidbody2D>();
             if (rb != null)
             {
-                rb.velocity = Vector2.zero; // En Unity 6 usa linearVelocity, en versiones anteriores es velocity
+                rb.velocity = Vector2.zero;
             }
 
             transform.position = respawnPoint.position;
@@ -75,7 +95,6 @@ public class PlayerHealth : MonoBehaviour
         }
     }
 
-    // Método opcional por si necesitas consultar la vida desde otro script
     public int GetCurrentHearts()
     {
         return currentHearts;
@@ -93,7 +112,6 @@ public class PlayerHealth : MonoBehaviour
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        // Busca el objeto llamado "RespawnPoint" en la nueva escena
         GameObject spawnPointObj = GameObject.Find("RespawnPoint");
         if (spawnPointObj != null)
         {

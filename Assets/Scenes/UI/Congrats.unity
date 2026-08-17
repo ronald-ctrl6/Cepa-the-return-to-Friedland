@@ -1441,8 +1441,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: GameOver, Assembly-CSharp
+      - m_Target: {fileID: 847139346}
+        m_TargetAssemblyTypeName: Congrats, Assembly-CSharp
         m_MethodName: BotonMenu
         m_Mode: 1
         m_Arguments:

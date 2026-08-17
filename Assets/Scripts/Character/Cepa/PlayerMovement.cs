@@ -63,24 +63,16 @@ public class PlayerMovement : MonoBehaviour
         if (rigid == null) rigid = GetComponent<Rigidbody2D>();
         originalGravity = rigid.gravityScale;
 
-        // Al iniciar la escena, sincronizamos con el GameManager guardado
         if (GameManager.Instance != null)
         {
             hasDoubleJump = GameManager.Instance.hasDoubleJump;
             hasDash = GameManager.Instance.hasDash;
 
-            if (hasDoubleJump)
-            {
-                maxJumps = 1;
-            }
-            else
-            {
-                maxJumps = 1;
-            }
+            maxJumps = hasDoubleJump ? 1 : 0;
         }
         else
         {
-            maxJumps = 1;
+            maxJumps = hasDoubleJump ? 1 : 0;
         }
     }
 
@@ -267,7 +259,7 @@ public class PlayerMovement : MonoBehaviour
             if (isGrounded)
             {
                 rigid.velocity = new Vector2(rigid.velocity.x, jumpForce);
-                jumpCount = 1;
+                jumpCount = 0;
             }
             else if (hasDoubleJump && jumpCount < maxJumps)
             {
@@ -281,6 +273,15 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (collision.CompareTag("Pit"))
+        {
+            PlayerHealth health = GetComponent<PlayerHealth>();
+            if (health != null)
+            {
+                health.FallIntoPit();
+            }
+        }
+
         if (collision.CompareTag("Ladder"))
         {
             laddersTouchingCount++;

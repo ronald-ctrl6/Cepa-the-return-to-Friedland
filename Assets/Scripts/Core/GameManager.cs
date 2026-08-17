@@ -20,6 +20,10 @@ public class GameManager : MonoBehaviour
     [Header("Referencias")]
     private UIManager uiManager;
 
+    public int currentHealth = 3;
+    public int maxHealth = 3;
+    private HashSet<string> collectedItems = new HashSet<string>();
+
     private void Awake()
     {
         // Patrón Singleton para que solo exista un GameManager y no se duplique al cambiar de escena
@@ -82,5 +86,32 @@ public class GameManager : MonoBehaviour
             uiManager.UpdateGems(totalGems);
             uiManager.UpdateRescues(currentRescues, totalRescuesInLevel);
         }
+    }
+
+    public void ResetGameData()
+    {
+        currentHealth = maxHealth;
+        totalCoins = 0;
+        totalGems = 0;
+        currentRescues = 0;
+        hasDoubleJump = false;
+        hasDash = false;
+
+        // Refrescamos la informacion
+        UpdateAllUI();
+        collectedItems.Clear();
+        UpdateAllUI();
+    }
+    public void MarkAsCollected(string itemId)
+    {
+        if (!string.IsNullOrEmpty(itemId))
+        {
+            collectedItems.Add(itemId);
+        }
+    }
+
+    public bool IsCollected(string itemId)
+    {
+        return !string.IsNullOrEmpty(itemId) && collectedItems.Contains(itemId);
     }
 }

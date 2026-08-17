@@ -14,13 +14,10 @@ public class ItemCollectible : MonoBehaviour
     [SerializeField] private Animator animator;
     [SerializeField] private string collectedAnimTrigger = "IsCollected"; // El nombre del Trigger en tu Animator
 
-    // Lista estática global para recordar qué coleccionables ya fueron recogidos en toda la sesión
-    private static HashSet<string> collectedItems = new HashSet<string>();
-
     void Start()
     {
-        // Si este objeto ya fue recogido en otra escena o antes, aplicamos su estado guardado
-        if (!string.IsNullOrEmpty(collectibleID) && collectedItems.Contains(collectibleID))
+        // Consultamos al GameManager si este objeto ya fue recogido en la partida actual
+        if (GameManager.Instance != null && GameManager.Instance.IsCollected(collectibleID))
         {
             ApplyCollectedState();
         }
@@ -29,12 +26,12 @@ public class ItemCollectible : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (!other.CompareTag("Player")) return;
-        if (!string.IsNullOrEmpty(collectibleID) && collectedItems.Contains(collectibleID)) return;
+        if (GameManager.Instance != null && GameManager.Instance.IsCollected(collectibleID)) return;
 
-        // 1. Marcar como recogido en la lista global
-        if (!string.IsNullOrEmpty(collectibleID))
+        // 1. Marcar como recogido en el GameManager
+        if (GameManager.Instance != null)
         {
-            collectedItems.Add(collectibleID);
+            GameManager.Instance.MarkAsCollected(collectibleID);
         }
 
         // 2. Ejecutar la lógica según el tipo
@@ -43,17 +40,14 @@ public class ItemCollectible : MonoBehaviour
 
     private void HandleCollection()
     {
-        UIManager uiManager = FindFirstObjectByType<UIManager>();
         switch (type)
         {
             case CollectibleType.Coin:
-                // Le pasamos el amountValue configurado en el Inspector
                 GameManager.Instance.AddCoins(amountValue);
                 Destroy(gameObject);
                 break;
 
             case CollectibleType.Diamond:
-                // Le pasamos el amountValue configurado en el Inspector
                 GameManager.Instance.AddGems(amountValue);
                 Destroy(gameObject);
                 break;
@@ -78,7 +72,6 @@ public class ItemCollectible : MonoBehaviour
         }
         else
         {
-            // Si es moneda o diamante y por alguna razón recarga la escena, se destruye
             Destroy(gameObject);
         }
     }

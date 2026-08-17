@@ -30,6 +30,10 @@ public class Congrats : MonoBehaviour
     // Método para el Botón "Volver al Menú"
     public void BotonMenu()
     {
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.ResetGameData();
+        }
         StartCoroutine(LoadSceneWithFade(menuSceneName));
     }
 

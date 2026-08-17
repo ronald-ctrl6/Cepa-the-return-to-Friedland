@@ -10,8 +10,8 @@ public class GameOver : MonoBehaviour
     [SerializeField] private float transitionTime = 1f;
 
     [Header("Nombres de Escenas")]
-    [SerializeField] private string levelSceneName = "Level1-1"; // Cambia esto por el nombre exacto de tu primer nivel
-    [SerializeField] private string menuSceneName = "Menu";     // Nombre de tu escena de menú
+    [SerializeField] private string levelSceneName = "Level1-1";
+    [SerializeField] private string menuSceneName = "Menu";
 
     void Start()
     {
@@ -31,12 +31,22 @@ public class GameOver : MonoBehaviour
     // Método para el Botón "Continuar"
     public void BotonContinuar()
     {
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.ResetGameData();
+        }
+
         StartCoroutine(LoadSceneWithFade(levelSceneName));
     }
 
     // Método para el Botón "Volver al Menú"
     public void BotonMenu()
     {
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.ResetGameData();
+        }
+
         StartCoroutine(LoadSceneWithFade(menuSceneName));
     }
 
