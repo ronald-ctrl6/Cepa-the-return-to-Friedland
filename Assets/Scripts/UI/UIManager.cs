@@ -24,6 +24,14 @@ public class UIManager : MonoBehaviour
     public Sprite guisantesSprite; // Sprite de Guisantes
     public Sprite guisantesVacioSprite; // Sprite de Guisantes sin reoger
 
+    public static UIManager Instance { get; private set; }
+
+    [Header("Notificaciones / Mensajes")]
+    [SerializeField] private GameObject messagePanel;
+    [SerializeField] private TMP_Text messageText;
+    [SerializeField] private float messageDuration = 3f;
+    private Coroutine messageRoutine;
+
     public void UpdateHealth(int currentHealth)
     {
         if (hearts == null || hearts.Length == 0) return;
@@ -58,27 +66,55 @@ public class UIManager : MonoBehaviour
         rescueText.text = current + " / " + total;
     }
 
-    public void UpdateItem(int currentItem)
+    public void UpdateItem(int slotIndex, Sprite itemSprite)
     {
         if (inventorySlots == null || inventorySlots.Length == 0) return;
 
-        for (int i = 0; i < inventorySlots.Length; i++)
+        if (slotIndex >= 0 && slotIndex < inventorySlots.Length)
         {
-            if (inventorySlots[i] == null) continue;
-            if (i == 1) inventorySlots[1].sprite = aceiteSprite;
-            if (i == 2)
+            if (inventorySlots[slotIndex] != null)
             {
-                inventorySlots[1].sprite = aceiteSprite;
-                inventorySlots[2].sprite = fosforoSprite;
-            }
-            if (i == 3) 
-            {
-                inventorySlots[1].sprite = aceiteSprite;
-                inventorySlots[2].sprite = fosforoSprite;
-                inventorySlots[3].sprite = guisantesSprite; 
-            }
+                inventorySlots[slotIndex].sprite = itemSprite;
 
-            inventorySlots[i].SetAllDirty();
+                Color color = inventorySlots[slotIndex].color;
+                color.a = 1f;
+                inventorySlots[slotIndex].color = color;
+
+                inventorySlots[slotIndex].SetAllDirty();
+            }
         }
+    }
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+
+        if (messagePanel != null) messagePanel.SetActive(false);
+    }
+
+    // Método para mostrar mensajes flotantes o de aviso
+    public void ShowNotification(string message)
+    {
+        if (messagePanel == null || messageText == null) return;
+
+        messageText.text = message;
+        messagePanel.SetActive(true);
+
+        if (messageRoutine != null) StopCoroutine(messageRoutine);
+        messageRoutine = StartCoroutine(HideMessageAfterTime());
+    }
+
+    private System.Collections.IEnumerator HideMessageAfterTime()
+    {
+        yield return new WaitForSeconds(messageDuration);
+        messagePanel.SetActive(false);
+        messageRoutine = null;
     }
 }

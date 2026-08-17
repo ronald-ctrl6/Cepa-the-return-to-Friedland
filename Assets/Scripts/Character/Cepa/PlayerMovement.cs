@@ -34,7 +34,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private bool hasDash = false;
 
     [Header("Límites de Salto")]
-    [SerializeField] private int maxJumps = 1;
+    [SerializeField] private int maxJumps = 0;
 
     [Header("Configuración de Dash")]
     [SerializeField] private float dashSpeed = 20f;
@@ -71,7 +71,7 @@ public class PlayerMovement : MonoBehaviour
 
             if (hasDoubleJump)
             {
-                maxJumps = 2;
+                maxJumps = 1;
             }
             else
             {
@@ -87,7 +87,7 @@ public class PlayerMovement : MonoBehaviour
     public void UnlockDoubleJump()
     {
         hasDoubleJump = true;
-        maxJumps = 2;
+        maxJumps = 1;
         if (GameManager.Instance != null) GameManager.Instance.hasDoubleJump = true;
     }
 

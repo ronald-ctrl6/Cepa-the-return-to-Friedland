@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 2225807481989884701}
   - component: {fileID: 529056659400902616}
   - component: {fileID: 9116319722369645958}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -65,7 +65,7 @@ MonoBehaviour:
   rayWidth: 1.5
   hasDoubleJump: 0
   hasDash: 0
-  maxJumps: 1
+  maxJumps: 0
   dashSpeed: 20
   dashDuration: 0.2
   dashCooldown: 0.5
@@ -217,7 +217,7 @@ GameObject:
   - component: {fileID: 678906190549018082}
   - component: {fileID: 5374776239694017881}
   - component: {fileID: 3763430200820224836}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Visuals
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -321,7 +321,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2887755184303964095}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: groundCheck
   m_TagString: Untagged
   m_Icon: {fileID: 0}
